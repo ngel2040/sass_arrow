@@ -1,0 +1,46 @@
+@import 'compass/css3';
+
+@function invert_direction($direction: 'top') {
+  $result: 'top';
+  @if $direction == 'top' {
+    $result: 'bottom';
+  } @else if $direction == 'right' {
+    $result: 'left';
+  } @else if $direction == 'bottom' {
+    $result: 'top';
+  } @else if $direction == 'left' {
+    $result: 'right';
+  }
+  @return $result;
+}
+
+@mixin get_arrow($direction: 'top', $size: 5px, $color: #fff) {
+  display: block;
+  height: 0;
+  width: 0;
+  border: $size solid transparent;
+  border-#{$direction}: 0;
+  $direction: invert_direction($direction);
+  border-#{$direction}: $size solid $color;
+  z-index: 1;
+}
+
+@mixin get_double_arrow($direction: 'top', $size: 5px, $color: #fff, $outline_color: #000) {
+  @include get_arrow($direction, $size, $outline_color);
+  &:after{
+    content: '';
+    position: absolute;
+    #{$direction}: 1px;
+    @if $direction == 'top' {
+      left: - $size + 1;
+    } @else if $direction == 'right' {
+      top: - $size + 1;
+    } @else if $direction == 'bottom' {
+      left: - $size + 1;
+    } @else if $direction == 'left' {
+      top: - $size + 1;
+    }
+    @include get_arrow($direction, $size - 1, $color);
+    z-index: 2;
+  }
+}
